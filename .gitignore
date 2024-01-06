@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.Python
+
+# Streamlit specific
+*.pyz
+
+# Ignore Streamlit configuration file
+.toml
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Logs
+logs/
+
+# Output of Streamlit app
+streamlit_app/
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
