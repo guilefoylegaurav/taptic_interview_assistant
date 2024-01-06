@@ -21,6 +21,12 @@ If that does not work, use
 $ python3 -m pip install -r requirements.txt
 ```
 ## Running the app
+Go to `secret_key.py` and and replace `openapi_key` with your own OpenAI API key:
+```
+openapi_key = "" # replace this with your own key, say "sk-assdfdsfdsgd"
+serpapi_key = ""
+```
+
 Start the app using
 ```
 $ streamlit run main.py
