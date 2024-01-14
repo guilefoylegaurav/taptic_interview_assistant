@@ -9,8 +9,8 @@ os.environ['OPENAI_API_KEY'] = openapi_key
 
 llm = OpenAI(temperature=0.8, max_tokens=-1)
 
-def generate_rubic(job_role, skills,job_complexity, expectations, organization_type, client_facing, mission_critical, impact_of_design):
-    prompt_template_name = PromptTemplate(
+def generate_rubric(job_role, skills,job_complexity, expectations, organization_type, client_facing, mission_critical, impact_of_design):
+    prompt_template_jd = PromptTemplate(
         input_variables=['job_role', 'skills','job_complexity', 'expectations', 'organization_type', 'client_facing', 'mission_critical', 'impact_of_design'],
         template="""
         Pretend that you are a talent-acquisition correspondent of a reputed firm. 
@@ -55,24 +55,38 @@ def generate_rubic(job_role, skills,job_complexity, expectations, organization_t
         """
     )
 
-    jd_chain = LLMChain(llm=llm, prompt=prompt_template_name, output_key='job_description')
+    jd_chain = LLMChain(llm=llm, prompt=prompt_template_jd, output_key='job_description')
 
-    prompt_template_items = PromptTemplate(
+    prompt_template_rubric = PromptTemplate(
         input_variables=['job_description'],
         template="""
         Pretend that you are an interviewer. 
         Suggest interview rubrics for the job description: 
         {job_description}
         Present your findings in the form of a spreadsheet.
+        Also mention the job role in the title, for which you are creating the rubrics. 
+        Also list down the top required skills for the role.
         """
     )
 
-    rubric_chain = LLMChain(llm=llm, prompt=prompt_template_items, output_key="rubric")
+    rubric_chain = LLMChain(llm=llm, prompt=prompt_template_rubric, output_key="rubric")
+
+    prompt_template_questions = PromptTemplate(
+        input_variables=['job_role', 'skills', 'rubric'],
+        template="""
+        Pretend that you are an interviewer. 
+        Provide me with a list of top interview questions for the position of method actor, for the job role {job_role}.
+        Generate questions that test the candidate on the skills mentioned: {skills}.
+        Please ask deep, technical, medium-hard questions pertaining to the aforementioned skills. Generate a minimum of 40 questions, all deeply technical.
+        """
+    )
+
+    questions_chain = LLMChain(llm=llm, prompt=prompt_template_questions, output_key="questions")
 
     chain = SequentialChain(
-        chains=[jd_chain, rubric_chain],
+        chains=[jd_chain, rubric_chain, questions_chain],
         input_variables=['job_role', 'skills','job_complexity', 'expectations', 'organization_type', 'client_facing', 'mission_critical', 'impact_of_design'],
-        output_variables=['job_description', 'rubric']
+        output_variables=['job_description', 'rubric', 'questions']
     )
 
     response = chain({'job_role': job_role, 'skills': skills,'job_complexity':job_complexity, 'expectations':expectations, 'organization_type':organization_type, 'client_facing':client_facing, 'mission_critical':mission_critical, 'impact_of_design':impact_of_design})

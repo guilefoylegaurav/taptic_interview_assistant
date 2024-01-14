@@ -26,10 +26,14 @@ generate_rubric = st.button("Generate rubric")
 # Check if the button is clicked
 if generate_rubric:
     if (job_role and yoe and skills):
-        response = langchain_helper.generate_rubic(job_role, skills,job_complexity, expectations, organization_type, client_facing, mission_critical, impact_of_design)
-        # print(response)
+        response = langchain_helper.generate_rubric(job_role, skills,job_complexity, expectations, organization_type, client_facing, mission_critical, impact_of_design)
+        print(response)
         st.header('JD')
         st.write(response['job_description'])
+        st.header('Interview Rubrics')
+        st.write(response['rubric'])
+        st.header('Sample Interview Questions')
+        st.write(response['questions'])
     else:
         st.write("Please do not leave any field empty. All fields are mandatory.")
 
