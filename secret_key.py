@@ -1,2 +1,4 @@
-openapi_key = "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"
+import streamlit as st
+import os
+openapi_key = st.secrets["openapi_key"]
 # serpapi_key = ""``
